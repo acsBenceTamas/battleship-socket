@@ -9,8 +9,8 @@
         <module name="battleship-websocket" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="battleship-websocket" target="1.5" />
+    <bytecodeTargetLevel target="12">
+      <module name="battleship-websocket" target="10" />
     </bytecodeTargetLevel>
   </component>
 </project>
