@@ -1,13 +1,11 @@
 package com.codecool.battleship;
 
-import javafx.scene.paint.Color;
-
 public class WaterTile extends GridElement {
     WaterTile() {
-        super(Color.BLUE);
+        super(TileStatus.WATER);
     }
 
     void hit() {
-        status = TileStatus.MISS;
+        status = TileStatus.WATER;
     }
 }
