@@ -1,5 +1,7 @@
 package com.codecool.battleship.connection;
 
+import com.codecool.battleship.Globals;
+
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -40,9 +42,21 @@ public class BattleshipServer implements Runnable {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
             while (true) {
+                if (in.hasNextLine()) {
+                    String response = in.nextLine();
+                    if (response.startsWith("CONNECTION") && !Globals.CLIENT_CONNECTED) {
+                        System.out.println(response);
+                        String[] responseSeparated = response.split(" ");
+                        BattleshipClient client = BattleshipClient.getInstance();
+                        client.setServerAddress(responseSeparated[1]);
+                        client.setServerPort(Integer.parseInt(responseSeparated[2]));
+                        client.start();
+                    }
+                }
                 if (commands.size() > 0) {
                     out.println(commands.pollFirst());
                     String response = in.nextLine();
+                    System.out.println(response);
                     System.out.println("Client responded to command");
                 }
             }

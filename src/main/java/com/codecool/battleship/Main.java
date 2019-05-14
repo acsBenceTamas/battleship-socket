@@ -7,11 +7,29 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    final static int DEFAULT_SERVER_PORT = 55655;
 
     public static void main(String[] args){
+        setupGlobals(args);
         startServer(args);
+
+        if (args.length > 3) if (args[3].equals("true")) clientTest();
+
         launch();
+    }
+
+    private static void setupGlobals(String[] args) {
+        if (args.length > 0) Globals.LOCAL_PORT = Integer.parseInt(args[0]);
+        if (args.length > 1) Globals.REMOTE_ADDRESS = args[1];
+        if (args.length > 2)Globals.REMOTE_PORT = Integer.parseInt(args[2]);
+    }
+
+    private static void clientTest() {
+        BattleshipClient client = BattleshipClient.getInstance();
+        client.setServerPort(Globals.REMOTE_PORT);
+        client.setServerAddress("localhost");
+        client.start();
+        BattleshipServer server = BattleshipServer.getInstance();
+        server.sendCommand("Do my bidding");
     }
 
     public void start(Stage primaryStage) {
@@ -25,7 +43,7 @@ public class Main extends Application {
 
     private static void startServer(String[] args) {
         BattleshipServer server = BattleshipServer.getInstance();
-        int port = DEFAULT_SERVER_PORT;
+        int port = Globals.LOCAL_PORT;
         if (args.length > 0) {
             port = Integer.parseInt(args[0]);
         }
