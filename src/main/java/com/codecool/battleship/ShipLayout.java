@@ -3,7 +3,7 @@ package com.codecool.battleship;
 public class ShipLayout {
     private int length;
 
-    public ShipLayout(int length) {
+    ShipLayout(int length) {
         this.length = length;
     }
 

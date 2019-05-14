@@ -1,4 +1,4 @@
-package com.codecool.battleship.Tile;
+package com.codecool.battleship.tile;
 
 import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;

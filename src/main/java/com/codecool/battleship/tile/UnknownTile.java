@@ -1,4 +1,4 @@
-package com.codecool.battleship.Tile;
+package com.codecool.battleship.tile;
 
 import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
@@ -9,7 +9,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public class UnknownTile extends Tile {
-    TileStatus status = TileStatus.UNKNOWN;
+    private TileStatus status = TileStatus.UNKNOWN;
 
     public UnknownTile(int x, int y) {
         super(x, y, TileStatus.UNKNOWN);
