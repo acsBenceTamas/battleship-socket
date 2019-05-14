@@ -16,10 +16,11 @@ public class Main extends Application {
 
     public void start(Stage primaryStage) {
         Game game = new Game();
-        Scene scene = new Scene(game, 800,600);
+        Globals.game = game;
+        Scene scene = new Scene(game, Globals.WINDOW_WIDTH,Globals.WINDOW_HEIGHT);
+        game.setupEventHandlers();
         primaryStage.setScene(scene);
         primaryStage.show();
-        Globals.game = game;
     }
 
     private static void startServer(String[] args) {
