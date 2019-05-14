@@ -36,8 +36,9 @@ public class Main extends Application {
         Game game = new Game();
         Globals.game = game;
         Scene scene = new Scene(game, Globals.WINDOW_WIDTH,Globals.WINDOW_HEIGHT);
-        game.setupEventHandlers();
+        game.mainMenu();
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 

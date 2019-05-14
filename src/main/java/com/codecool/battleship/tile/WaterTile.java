@@ -1,4 +1,4 @@
-package com.codecool.battleship.Tile;
+package com.codecool.battleship.tile;
 
 public class WaterTile extends PlayerTile {
     public WaterTile(int x, int y) {

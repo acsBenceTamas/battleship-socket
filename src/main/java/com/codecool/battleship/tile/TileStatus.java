@@ -1,4 +1,4 @@
-package com.codecool.battleship.Tile;
+package com.codecool.battleship.tile;
 
 import javafx.scene.paint.Color;
 

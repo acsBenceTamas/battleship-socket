@@ -1,4 +1,4 @@
-package com.codecool.battleship.Tile;
+package com.codecool.battleship.tile;
 
 import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
@@ -8,16 +8,17 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public abstract class PlayerTile extends Tile {
+public class UnknownTile extends Tile {
+    private TileStatus status = TileStatus.UNKNOWN;
 
-    PlayerTile(int x, int y, TileStatus status) {
-        super(x, y, status);
-        this.setOnMouseEntered(onMouseEnterHandler);
-        this.setOnMouseExited(onMouseLeaveHandler);
-        this.setOnMousePressed(onMouseClickHandler);
+    public UnknownTile(int x, int y) {
+        super(x, y, TileStatus.UNKNOWN);
     }
 
-    public abstract void hit();
+    public void reveal(TileStatus status) {
+        this.status = status;
+    }
+
 
     private EventHandler<MouseEvent> onMouseClickHandler = e -> {
         if(Globals.gameState == GameState.PLACEMENT){
@@ -29,7 +30,7 @@ public abstract class PlayerTile extends Tile {
                     Globals.game.shipPlacementMarker(getGridX(), getGridY());
                 } else if(e.getButton() == MouseButton.PRIMARY && Globals.game.isValidPlacement(getGridX(), getGridY(), shipLayout.getLength())) {
                     Globals.game.removeShipLayout();
-                    new Ship(getGridX(), getGridY(), shipLayout.getLength(), Globals.getPlacementDirection());
+                    Globals.game.addPlayerShip(new Ship(getGridX(), getGridY(), shipLayout.getLength(), Globals.getPlacementDirection()));
                 }
             }
         }

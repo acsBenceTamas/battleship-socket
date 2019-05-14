@@ -1,6 +1,6 @@
 package com.codecool.battleship;
 
-import com.codecool.battleship.Tile.ShipTile;
+import com.codecool.battleship.tile.ShipTile;
 
 import java.util.ArrayList;
 import java.util.List;
