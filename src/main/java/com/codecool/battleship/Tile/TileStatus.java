@@ -1,4 +1,4 @@
-package com.codecool.battleship;
+package com.codecool.battleship.Tile;
 
 import javafx.scene.paint.Color;
 
@@ -7,9 +7,10 @@ public enum TileStatus {
     HIT(Color.YELLOW),
     SUNK(Color.RED),
     WATER(Color.BLUE),
+    MISS(Color.DARKRED),
     UNKNOWN(Color.DARKGREY);
 
-    Color color;
+    public Color color;
 
     TileStatus(Color color) {
         this.color = color;
