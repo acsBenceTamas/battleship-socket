@@ -7,7 +7,7 @@ public enum TileStatus {
     HIT(Color.YELLOW),
     SUNK(Color.RED),
     WATER(Color.BLUE),
-    MISS(Color.DARKRED),
+    MISS(Color.DARKBLUE),
     UNKNOWN(Color.DARKGREY);
 
     public Color color;

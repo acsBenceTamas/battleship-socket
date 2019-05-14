@@ -1,6 +1,8 @@
 package com.codecool.battleship;
 
 import com.codecool.battleship.Tile.*;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -10,15 +12,21 @@ import java.util.Stack;
 
 public class Game extends Pane {
     private static int GRID_SIZE = 10;
-    private GridTile[][] playerGrid = new GridTile[GRID_SIZE][GRID_SIZE];
+    private PlayerTile[][] playerGrid = new PlayerTile[GRID_SIZE][GRID_SIZE];
     private UnknownTile[][] enemyGrid = new UnknownTile[GRID_SIZE][GRID_SIZE];
-    private List<Ship> ships = new ArrayList<Ship>();
     private Stack<ShipLayout> shipLayouts = new Stack<ShipLayout>();
+    private List<Ship> playerShips = new ArrayList<>();
 
     Game() {
         addShipLayouts();
         fillWater();
         drawPlayerGrid();
+        fillEnemyGrid();
+        drawEnemyGrid();
+    }
+
+    public void addPlayerShip(Ship ship) {
+        playerShips.add(ship);
     }
 
     void addShipLayouts() {
@@ -27,6 +35,10 @@ public class Game extends Pane {
         shipLayouts.push(new ShipLayout(3));
         shipLayouts.push(new ShipLayout(3));
         shipLayouts.push(new ShipLayout(4));
+    }
+
+    public void resolveEnemyTurn() {
+        
     }
 
     public ShipLayout getShipLayout() {
@@ -43,13 +55,29 @@ public class Game extends Pane {
             Globals.gameState = GameState.PLAYER_TURN;
     }
 
+    void fillEnemyGrid() {
+        for (int x = 0; x<10; x++) {
+            for (int y = 0; y<10; y++) {
+                UnknownTile tile = new UnknownTile(x, y);
+                tile.setX(enemyGridInitialPosition() + x * Globals.TILE_WIDTH);
+                tile.setY(y * Globals.TILE_HEIGHT);
+                enemyGrid[x][y] = tile;
+            }
+        }
+    }
+
+    double enemyGridInitialPosition() {
+        double tilewidth = 40;
+        return Globals.WINDOW_WIDTH - GRID_SIZE * tilewidth;
+    }
+
     void fillWater() {
-        for (int i = 0; i<10; i++) {
-            for (int j = 0; j<10; j++) {
-                GridTile tile = new WaterTile(i,j);
-                tile.setX(i*40);
-                tile.setY(j*40);
-                playerGrid[i][j] = tile;
+        for (int x = 0; x<10; x++) {
+            for (int y = 0; y<10; y++) {
+                PlayerTile tile = new WaterTile(x,y);
+                tile.setX(x * Globals.TILE_WIDTH);
+                tile.setY(y * Globals.TILE_HEIGHT);
+                playerGrid[x][y] = tile;
             }
         }
     }
@@ -58,8 +86,8 @@ public class Game extends Pane {
         int x = shipTile.getGridX();
         int y = shipTile.getGridY();
         getChildren().remove(playerGrid[x][y]);
-        shipTile.setX(x*40);
-        shipTile.setY(y*40);
+        shipTile.setX(x * Globals.TILE_WIDTH);
+        shipTile.setY(y * Globals.TILE_HEIGHT);
         playerGrid[x][y] = shipTile;
         getChildren().add(shipTile);
     }
@@ -75,10 +103,17 @@ public class Game extends Pane {
     }
 
     void drawPlayerGrid() {
-        clearScreen();
         for (int i = 0; i<10; i++) {
             for (int j = 0; j<10; j++) {
                 getChildren().add(playerGrid[i][j]);
+            }
+        }
+    }
+
+    void drawEnemyGrid() {
+        for (int i = 0; i<10; i++) {
+            for (int j = 0; j<10; j++) {
+                getChildren().add(enemyGrid[i][j]);
             }
         }
     }
@@ -124,5 +159,26 @@ public class Game extends Pane {
                 playerGrid[i][j].setFill(playerGrid[i][j].getStatus().color);
             }
         }
+    }
+
+    void setupEventHandlers() {
+        this.getScene().addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getText().equals("a")){
+                    for (int i = 0; i<10; i++) {
+                        for (int j = 0; j<10; j++) {
+                            playerGrid[i][j].hit();
+                        }
+                    }
+                    System.out.println("a keypress");
+                }
+                if (event.getText().equals("b")){
+                    playerGrid[0][0].hit();
+                    playerGrid[0][1].hit();
+                    System.out.println("b keypress");
+                }
+            }
+        });
     }
 }

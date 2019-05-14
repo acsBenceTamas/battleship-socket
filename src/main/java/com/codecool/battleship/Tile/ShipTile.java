@@ -2,7 +2,7 @@ package com.codecool.battleship.Tile;
 
 import com.codecool.battleship.Ship;
 
-public class ShipTile extends GridTile {
+public class ShipTile extends PlayerTile {
     private Ship ship;
 
     public ShipTile(int x, int y, Ship ship) {
@@ -10,7 +10,12 @@ public class ShipTile extends GridTile {
         this.ship = ship;
     }
 
-    void hit() {
+    public void hit() {
+        setStatus(TileStatus.HIT);
+        ship.checkIfShipSunk();
+    }
 
+    public void sunk() {
+        setStatus(TileStatus.SUNK);
     }
 }

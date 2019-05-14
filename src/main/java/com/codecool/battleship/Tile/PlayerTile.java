@@ -4,23 +4,20 @@ import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
 import com.codecool.battleship.Ship;
 import com.codecool.battleship.ShipLayout;
-import com.codecool.battleship.Tile.Tile;
-import com.codecool.battleship.Tile.TileStatus;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
-public abstract class GridTile extends Tile {
+public abstract class PlayerTile extends Tile {
 
-    GridTile(int x, int y, TileStatus status) {
+    PlayerTile(int x, int y, TileStatus status) {
         super(x, y, status);
         this.setOnMouseEntered(onMouseEnterHandler);
         this.setOnMouseExited(onMouseLeaveHandler);
         this.setOnMousePressed(onMouseClickHandler);
     }
 
-    abstract void hit();
+    public abstract void hit();
 
     private EventHandler<MouseEvent> onMouseClickHandler = e -> {
         if(Globals.gameState == GameState.PLACEMENT){

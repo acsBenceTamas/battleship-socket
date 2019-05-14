@@ -1,5 +1,6 @@
 package com.codecool.battleship.Tile;
 
+import com.codecool.battleship.Globals;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -11,8 +12,8 @@ public abstract class Tile extends Rectangle {
     Tile(int x, int y, Color color) {
         this.x = x;
         this.y = y;
-        setWidth(40);
-        setHeight(40);
+        setWidth(Globals.TILE_WIDTH);
+        setHeight(Globals.TILE_HEIGHT);
         setFill(color);
         setStroke(Color.BLACK);
     }
@@ -24,6 +25,11 @@ public abstract class Tile extends Rectangle {
 
     public TileStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(TileStatus status) {
+        this.status = status;
+        setFill(status.color);
     }
 
     public int getGridX() {
