@@ -1,6 +1,7 @@
 package com.codecool.battleship.connection;
 
 import com.codecool.battleship.Globals;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -51,6 +52,9 @@ public class BattleshipClient implements Runnable {
             out.println("CONNECTION " + socket.getLocalAddress().toString().substring(1) + " " + Globals.LOCAL_PORT);
             while (in.hasNextLine() && running) {
                 String line = in.nextLine();
+                if(line.startsWith("CONNECTION_SUCCESS")){
+                    Platform.runLater(() -> Globals.game.startGame());
+                }
                 System.out.println(line);
                 out.println("RESPONSE");
             }

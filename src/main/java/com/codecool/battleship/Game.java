@@ -2,6 +2,7 @@ package com.codecool.battleship;
 
 import com.codecool.battleship.connection.BattleshipClient;
 import com.codecool.battleship.tile.*;
+import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -49,7 +50,6 @@ public class Game extends Pane {
             System.out.println(ip.getCharacters());
             String[] address = ip.getCharacters().toString().split(":");
             createConnection(address[0],address[1]);
-            startGame();
         });
     }
 
@@ -60,7 +60,7 @@ public class Game extends Pane {
         client.start();
     }
 
-    private void startGame() {
+    public void startGame() {
         clearScreen();
         addShipLayouts();
         fillWater();

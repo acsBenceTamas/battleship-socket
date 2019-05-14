@@ -1,6 +1,7 @@
 package com.codecool.battleship.connection;
 
 import com.codecool.battleship.Globals;
+import javafx.application.Platform;
 
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -51,6 +52,8 @@ public class BattleshipServer implements Runnable {
                         client.setServerAddress(responseSeparated[1]);
                         client.setServerPort(Integer.parseInt(responseSeparated[2]));
                         client.start();
+                        Platform.runLater(() -> Globals.game.startGame());
+                        sendCommand("CONNECTION_SUCCESS");
                     }
                 }
                 if (commands.size() > 0) {
