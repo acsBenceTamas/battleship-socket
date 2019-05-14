@@ -1,5 +1,7 @@
 package com.codecool.battleship.connection;
 
+import com.codecool.battleship.Globals;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ConnectException;
@@ -33,27 +35,35 @@ public class BattleshipClient implements Runnable {
 
     @Override
     public void run() {
+        while (true) {
+            processServerMessages();
+        }
+    }
+
+    private void processServerMessages() {
         boolean running = true;
-        while (running) {
-            try (Socket socket = new Socket(serverAddress, serverPort);){
-                Scanner in = new Scanner(socket.getInputStream());
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                while (in.hasNextLine() && running) {
-                    String line = in.nextLine();
-                    System.out.println(line);
-                    out.println("RESPONSE");
-                }
-            } catch (ConnectException e) {
-                try {
-                    // e.printStackTrace();
-                    System.out.println("Connection attempt failed. Retrying in 10 seconds");
-                    Thread.sleep(10000);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        System.out.println(serverAddress + ":" + serverPort);
+        try (Socket socket = new Socket(serverAddress, serverPort);){
+            Globals.CLIENT_CONNECTED = true;
+            Scanner in = new Scanner(socket.getInputStream());
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+
+            out.println("CONNECTION " + socket.getLocalAddress().toString().substring(1) + " " + Globals.LOCAL_PORT);
+            while (in.hasNextLine() && running) {
+                String line = in.nextLine();
+                System.out.println(line);
+                out.println("RESPONSE");
             }
+        } catch (ConnectException e) {
+            try {
+                // e.printStackTrace();
+                System.out.println("Connection attempt failed. Retrying in 2 seconds");
+                Thread.sleep(2000);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
