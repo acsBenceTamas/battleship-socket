@@ -98,6 +98,9 @@ public class BattleshipClient implements Runnable {
                         TileStatus status = TileStatus.valueOf(args[3]);
                         Platform.runLater(() -> Globals.game.markEnemyTile(x,y,status));
                     }
+                    if(line.startsWith("GAME_WON")) {
+                        Platform.runLater(() -> Globals.game.handleGameOver(true));
+                    }
                     logger.debug("Sending confirmation of received message from remote client");
                     out.println("RESPONSE");
                 } catch (NoSuchElementException e) {

@@ -25,13 +25,9 @@ public class Ship {
         return intactParts;
     }
 
-    public boolean checkIfShipSunk() {
+    public boolean isShipSunk() {
         intactParts--;
-        if(countIntactParts() == 0){
-            sinkShip();
-            return true;
-        }
-        return false;
+        return countIntactParts() == 0;
     }
 
     public void sendSunkenShipData() {
@@ -40,7 +36,7 @@ public class Ship {
         }
     }
 
-    private void sinkShip() {
+    public void sinkShip() {
         for (ShipTile shipParts:shipTiles) {
             shipParts.sunk();
         }

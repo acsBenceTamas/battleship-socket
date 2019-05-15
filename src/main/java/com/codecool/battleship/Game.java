@@ -14,6 +14,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,6 +94,15 @@ public class Game extends Pane {
         logger.trace("Done Creating client side connection");
     }
 
+    private boolean isGameOver() {
+        for (Ship playerShip:playerShips) {
+            if(!playerShip.isShipSunk()){
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void startServer() {
         logger.trace("Initiating Server side connection");
 
@@ -141,11 +152,29 @@ public class Game extends Pane {
         logger.trace("Done Preparing ship layouts");
     }
 
+    public void displayGameOver(boolean won) {
+        Text text = new Text(Globals.WINDOW_WIDTH/2-100,Globals.WINDOW_HEIGHT/2-36,"Placeholder");
+        if(won){
+            text.setText("Won");
+        } else {
+            text.setText("Lost");
+        }
+        text.setWrappingWidth(200);
+        text.setTextAlignment(TextAlignment.CENTER);
+        text.setFont(Font.font(72));
+        getChildren().add(text);
+    }
+
     public void resolveEnemyTurn(String[] enemyAction) {
         logger.trace("Resolving Enemy Turn");
         int x = Integer.parseInt(enemyAction[1]);
         int y = Integer.parseInt(enemyAction[2]);
         playerGrid[x][y].hit();
+        if(isGameOver()){
+            handleGameOver(false);
+            BattleshipServer.getInstance().sendCommand("GAME_WON");
+            return;
+        }
         Globals.gameState = GameState.PLAYER_TURN;
 //        BattleshipServer.getInstance().sendCommand("ATTACK_RESPONSE "+x+" "+y+" "+playerGrid[x][y].getStatus());
         logger.trace("Done Resolving Enemy Turn");
@@ -203,7 +232,7 @@ public class Game extends Pane {
     }
 
     private double enemyGridInitialPosition() {
-        double tilewidth = 40;
+        double tilewidth = Globals.TILE_WIDTH;
         return Globals.WINDOW_WIDTH - GRID_SIZE * tilewidth;
     }
 
@@ -337,5 +366,10 @@ public class Game extends Pane {
                 logger.debug("b keybress");
             }
         });
+    }
+
+    public void handleGameOver(boolean won) {
+        Globals.gameState = GameState.ENDED;
+        displayGameOver(won);
     }
 }

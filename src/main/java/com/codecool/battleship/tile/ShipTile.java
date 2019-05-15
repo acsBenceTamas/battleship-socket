@@ -1,7 +1,6 @@
 package com.codecool.battleship.tile;
 
 import com.codecool.battleship.Ship;
-import com.codecool.battleship.connection.BattleshipServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +16,8 @@ public class ShipTile extends PlayerTile {
     public void hit() {
         logger.debug(this + " has been hit");
         setStatus(TileStatus.HIT);
-        if(ship.checkIfShipSunk()) {
+        if(ship.isShipSunk()) {
+            ship.sinkShip();
             ship.sendSunkenShipData();
         } else {
             sendAttackResponse();
