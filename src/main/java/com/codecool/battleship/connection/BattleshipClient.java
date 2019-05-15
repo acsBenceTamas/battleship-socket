@@ -1,5 +1,6 @@
 package com.codecool.battleship.connection;
 
+import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
 import javafx.application.Platform;
 
@@ -53,7 +54,26 @@ public class BattleshipClient implements Runnable {
             while (in.hasNextLine() && running) {
                 String line = in.nextLine();
                 if(line.startsWith("CONNECTION_SUCCESS")){
-                    Platform.runLater(() -> Globals.game.startGame());
+                    Platform.runLater(() -> {
+                        Globals.game.setStartingPlayer();
+                        Globals.game.startGame();
+                    });
+                }
+                if(line.startsWith("PLACEMENT_FINISHED")){
+                    Platform.runLater(() -> {
+                        Globals.game.setEnemyReady();
+                        if(Globals.gameState == GameState.PLACEMENT_FINISHED){
+                            if(Globals.game.startingPlayer){
+                                Globals.gameState = GameState.PLAYER_TURN;
+                            } else {
+                                Globals.gameState = GameState.ENEMY_TURN;
+                            }
+                        }
+                    });
+                }
+                if(line.startsWith("ATTACK")){
+                    System.out.println(line.split(" ")[1]+" "+line.split(" ")[2]);
+                    Platform.runLater(() -> Globals.game.resolveEnemyTurn(line.split(" ")));
                 }
                 System.out.println(line);
                 out.println("RESPONSE");

@@ -2,8 +2,10 @@ package com.codecool.battleship;
 
 import com.codecool.battleship.connection.BattleshipClient;
 import com.codecool.battleship.connection.BattleshipServer;
-import com.codecool.battleship.tile.*;
-import javafx.concurrent.Task;
+import com.codecool.battleship.tile.PlayerTile;
+import com.codecool.battleship.tile.ShipTile;
+import com.codecool.battleship.tile.UnknownTile;
+import com.codecool.battleship.tile.WaterTile;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -23,6 +25,8 @@ public class Game extends Pane {
     private UnknownTile[][] enemyGrid = new UnknownTile[GRID_SIZE][GRID_SIZE];
     private Stack<ShipLayout> shipLayouts = new Stack<>();
     private List<Ship> playerShips = new ArrayList<>();
+    public boolean startingPlayer = false;
+    private boolean enemyReady = false;
 
     Game() {
         startServer();
@@ -51,7 +55,11 @@ public class Game extends Pane {
         submit.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             System.out.println(ip.getCharacters());
             String[] address = ip.getCharacters().toString().split(":");
-            createConnection(address[0],address[1]);
+            if(address.length == 1){
+                createConnection(address[0], String.valueOf(Globals.DEFAULT_SERVER_PORT));
+            }else{
+                createConnection(address[0],address[1]);
+            }
         });
     }
 
@@ -66,6 +74,14 @@ public class Game extends Pane {
         BattleshipServer server = BattleshipServer.getInstance();
         server.setPort(Globals.LOCAL_PORT);
         server.start();
+    }
+
+    public void setStartingPlayer() {
+        startingPlayer = true;
+    }
+
+    public void setEnemyReady() {
+        enemyReady = true;
     }
 
     public void startGame() {
@@ -89,8 +105,10 @@ public class Game extends Pane {
         shipLayouts.push(new ShipLayout(4));
     }
 
-    public void resolveEnemyTurn() {
-        
+    public void resolveEnemyTurn(String[] enemyAction) {
+        if(enemyAction[0].equals("ATTACK")){
+            playerGrid[Integer.parseInt(enemyAction[1])][Integer.parseInt(enemyAction[2])].hit();
+        }
     }
 
     public ShipLayout getShipLayout() {
@@ -102,8 +120,18 @@ public class Game extends Pane {
 
     public void removeShipLayout() {
         shipLayouts.pop();
-        if(shipLayouts.empty())
-            Globals.gameState = GameState.PLAYER_TURN;
+        if(shipLayouts.empty()) {
+            if(enemyReady){
+                if(startingPlayer){
+                    Globals.gameState = GameState.PLAYER_TURN;
+                } else {
+                    Globals.gameState = GameState.ENEMY_TURN;
+                }
+            } else {
+                Globals.gameState = GameState.PLACEMENT_FINISHED;
+            }
+            BattleshipServer.getInstance().sendCommand("PLACEMENT_FINISHED");
+        }
     }
 
     private void fillEnemyGrid() {

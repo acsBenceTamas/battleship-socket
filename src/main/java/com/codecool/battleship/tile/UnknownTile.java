@@ -4,15 +4,20 @@ import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
 import com.codecool.battleship.Ship;
 import com.codecool.battleship.ShipLayout;
+import com.codecool.battleship.connection.BattleshipServer;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 public class UnknownTile extends Tile {
     private TileStatus status = TileStatus.UNKNOWN;
 
     public UnknownTile(int x, int y) {
         super(x, y, TileStatus.UNKNOWN);
+        this.setOnMouseEntered(onMouseEnterHandler);
+        this.setOnMouseExited(onMouseLeaveHandler);
+        this.setOnMousePressed(onMouseClickHandler);
     }
 
     public void reveal(TileStatus status) {
@@ -21,30 +26,21 @@ public class UnknownTile extends Tile {
 
 
     private EventHandler<MouseEvent> onMouseClickHandler = e -> {
-        if(Globals.gameState == GameState.PLACEMENT){
-            ShipLayout shipLayout = Globals.game.getShipLayout();
-            if(shipLayout != null){
-                if(e.getButton() == MouseButton.SECONDARY){
-                    Globals.changeDirection();
-                    Globals.game.shipPlacementMarkerRemove();
-                    Globals.game.shipPlacementMarker(getGridX(), getGridY());
-                } else if(e.getButton() == MouseButton.PRIMARY && Globals.game.isValidPlacement(getGridX(), getGridY(), shipLayout.getLength())) {
-                    Globals.game.removeShipLayout();
-                    Globals.game.addPlayerShip(new Ship(getGridX(), getGridY(), shipLayout.getLength(), Globals.getPlacementDirection()));
-                }
-            }
+        if(e.getButton() == MouseButton.PRIMARY && Globals.gameState == GameState.PLAYER_TURN && status == TileStatus.UNKNOWN) {
+            Globals.gameState = GameState.ENEMY_TURN;
+            BattleshipServer.getInstance().sendCommand("ATTACKED "+getGridX()+" "+getGridY());
         }
     };
 
     private EventHandler<MouseEvent> onMouseEnterHandler = e -> {
-        if(Globals.gameState == GameState.PLACEMENT){
-            Globals.game.shipPlacementMarker(getGridX(), getGridY());
+        if(Globals.gameState == GameState.PLAYER_TURN && status == TileStatus.UNKNOWN){
+            setFill(Color.WHITE);
         }
     };
 
     private EventHandler<MouseEvent> onMouseLeaveHandler = e -> {
-        if(Globals.gameState == GameState.PLACEMENT){
-            Globals.game.shipPlacementMarkerRemove();
+        if(Globals.gameState == GameState.PLAYER_TURN && status == TileStatus.UNKNOWN){
+            setFill(status.color);
         }
     };
 }
