@@ -66,8 +66,8 @@ public class BattleshipServer implements Runnable {
                             client.setServerAddress(responseSeparated[1]);
                             client.setServerPort(Integer.parseInt(responseSeparated[2]));
                             client.start();
-                            Platform.runLater(() -> Globals.game.startGame());
                             Globals.CLIENT_CONNECTED = true;
+                            Platform.runLater(() -> Globals.game.startGame());
                             sendCommand("CONNECTION_SUCCESS");
                             logger.debug("Responding to remote client with CONNECTION_SUCCESS");
                         }
@@ -75,9 +75,8 @@ public class BattleshipServer implements Runnable {
                         logger.trace("No next line");
                     }
                 }
-                logger.debug("Top command: "+commands.toString());
                 if (commands.size() > 0) {
-                    logger.debug("INSIDE: Top command: "+commands.toString());
+                    logger.debug("Top command: "+commands.peekFirst());
                     String command = commands.pollFirst();
                     logger.debug("Sending command to remote client: " + command);
                     out.println(command);

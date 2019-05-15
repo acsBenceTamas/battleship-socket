@@ -53,13 +53,13 @@ public class BattleshipClient implements Runnable {
         logger.debug("Client thread running");
         System.out.println(serverAddress + ":" + serverPort);
         try (Socket socket = new Socket(serverAddress, serverPort);){
-//            Globals.CLIENT_CONNECTED = true;
             Scanner in = new Scanner(socket.getInputStream());
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
             if(!Globals.CLIENT_CONNECTED){
                 logger.debug("Sending connection information to remote client");
                 out.println("CONNECTION " + socket.getLocalAddress().toString().substring(1) + " " + Globals.LOCAL_PORT);
+                Globals.CLIENT_CONNECTED = true;
             }
             while (Globals.GAME_IS_RUNNING) {
                 try {

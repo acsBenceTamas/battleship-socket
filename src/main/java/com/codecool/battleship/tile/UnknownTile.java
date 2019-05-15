@@ -3,6 +3,7 @@ package com.codecool.battleship.tile;
 import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
 import com.codecool.battleship.connection.BattleshipServer;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -32,7 +33,9 @@ public class UnknownTile extends Tile {
         if(e.getButton() == MouseButton.PRIMARY && Globals.gameState == GameState.PLAYER_TURN && status == TileStatus.UNKNOWN) {
             Globals.gameState = GameState.ENEMY_TURN;
             setFill(status.color);
-            BattleshipServer.getInstance().sendCommand("ATTACKED "+getGridX()+" "+getGridY());
+            Platform.runLater(() -> {
+                BattleshipServer.getInstance().sendCommand("ATTACKED "+getGridX()+" "+getGridY());
+            });
         }
     };
 
