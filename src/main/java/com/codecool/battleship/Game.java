@@ -152,13 +152,16 @@ public class Game extends Pane {
 
         shipLayouts.pop();
         if(shipLayouts.empty()) {
+            logger.debug("Player finished placement");
             if(enemyReady){
+                logger.debug("Enemy player is already ready");
                 if(startingPlayer){
                     Globals.gameState = GameState.PLAYER_TURN;
                 } else {
                     Globals.gameState = GameState.ENEMY_TURN;
                 }
             } else {
+                logger.debug("Enemy player is not finished");
                 Globals.gameState = GameState.PLACEMENT_FINISHED;
             }
             BattleshipServer.getInstance().sendCommand("PLACEMENT_FINISHED");

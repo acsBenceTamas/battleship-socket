@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class BattleshipServer implements Runnable {
@@ -52,21 +53,31 @@ public class BattleshipServer implements Runnable {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
             while (Globals.GAME_IS_RUNNING) {
-                if (in.hasNextLine()) {
-                    String response = in.nextLine();
-                    if (response.startsWith("CONNECTION") && !Globals.CLIENT_CONNECTED) {
-                        logger.debug("Received connection information from remote client: " + response);
-                        String[] responseSeparated = response.split(" ");
-                        BattleshipClient client = BattleshipClient.getInstance();
-                        client.setServerAddress(responseSeparated[1]);
-                        client.setServerPort(Integer.parseInt(responseSeparated[2]));
-                        client.start();
-                        Platform.runLater(() -> Globals.game.startGame());
-                        logger.debug("Responding to remote client with CONNECTION_SUCCESS");
-                        sendCommand("CONNECTION_SUCCESS");
+                logger.trace("Starting server while loop");
+                if (!Globals.CLIENT_CONNECTED) {
+                    try {
+                        logger.trace("Inside try");
+                        String response = in.nextLine();
+                        logger.trace("Response: "+response);
+                        if (response.startsWith("CONNECTION")) {
+                            logger.debug("Received connection information from remote client: " + response);
+                            String[] responseSeparated = response.split(" ");
+                            BattleshipClient client = BattleshipClient.getInstance();
+                            client.setServerAddress(responseSeparated[1]);
+                            client.setServerPort(Integer.parseInt(responseSeparated[2]));
+                            client.start();
+                            Platform.runLater(() -> Globals.game.startGame());
+                            Globals.CLIENT_CONNECTED = true;
+                            sendCommand("CONNECTION_SUCCESS");
+                            logger.debug("Responding to remote client with CONNECTION_SUCCESS");
+                        }
+                    } catch (NoSuchElementException e) {
+                        logger.trace("No next line");
                     }
                 }
+                logger.debug("Top command: "+commands.toString());
                 if (commands.size() > 0) {
+                    logger.debug("INSIDE: Top command: "+commands.toString());
                     String command = commands.pollFirst();
                     logger.debug("Sending command to remote client: " + command);
                     out.println(command);

@@ -2,15 +2,13 @@ package com.codecool.battleship.tile;
 
 import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
-import com.codecool.battleship.Ship;
-import com.codecool.battleship.ShipLayout;
 import com.codecool.battleship.connection.BattleshipServer;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javafx.scene.paint.Color;
 
 public class UnknownTile extends Tile {
     private static final Logger logger = LoggerFactory.getLogger(UnknownTile.class);
@@ -33,6 +31,7 @@ public class UnknownTile extends Tile {
         logger.trace("Mouse pressed on " + this);
         if(e.getButton() == MouseButton.PRIMARY && Globals.gameState == GameState.PLAYER_TURN && status == TileStatus.UNKNOWN) {
             Globals.gameState = GameState.ENEMY_TURN;
+            setFill(status.color);
             BattleshipServer.getInstance().sendCommand("ATTACKED "+getGridX()+" "+getGridY());
         }
     };

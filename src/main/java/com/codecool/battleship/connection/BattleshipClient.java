@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class BattleshipClient implements Runnable {
@@ -50,42 +51,50 @@ public class BattleshipClient implements Runnable {
 
     private void processServerMessages() {
         logger.debug("Client thread running");
-        boolean running = true;
         System.out.println(serverAddress + ":" + serverPort);
         try (Socket socket = new Socket(serverAddress, serverPort);){
-            Globals.CLIENT_CONNECTED = true;
+//            Globals.CLIENT_CONNECTED = true;
             Scanner in = new Scanner(socket.getInputStream());
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-            logger.debug("Sending connection information to remote client");
-            out.println("CONNECTION " + socket.getLocalAddress().toString().substring(1) + " " + Globals.LOCAL_PORT);
-            while (in.hasNextLine() && running) {
-                String line = in.nextLine();
-                if(line.startsWith("CONNECTION_SUCCESS")){
-                    logger.debug("Remote client received connection information successfully");
-                    Platform.runLater(() -> {
-                        Globals.game.setStartingPlayer();
-                        Globals.game.startGame();
-                    });
-                }
-                if(line.startsWith("PLACEMENT_FINISHED")){
-                    Platform.runLater(() -> {
-                        Globals.game.setEnemyReady();
-                        if(Globals.gameState == GameState.PLACEMENT_FINISHED){
-                            if(Globals.game.startingPlayer){
-                                Globals.gameState = GameState.PLAYER_TURN;
-                            } else {
-                                Globals.gameState = GameState.ENEMY_TURN;
+            if(!Globals.CLIENT_CONNECTED){
+                logger.debug("Sending connection information to remote client");
+                out.println("CONNECTION " + socket.getLocalAddress().toString().substring(1) + " " + Globals.LOCAL_PORT);
+            }
+            while (Globals.GAME_IS_RUNNING) {
+                try {
+                    String line = in.nextLine();
+                    logger.debug("Received command from remove client: "+line);
+                    if(line.startsWith("CONNECTION_SUCCESS")){
+                        logger.debug("Remote client received connection information successfully");
+                        Platform.runLater(() -> {
+                            Globals.game.setStartingPlayer();
+                            Globals.game.startGame();
+                        });
+                    }
+                    if(line.startsWith("PLACEMENT_FINISHED")){
+                        logger.debug("Enemy finished with placement");
+                        Platform.runLater(() -> {
+                            Globals.game.setEnemyReady();
+                            if(Globals.gameState == GameState.PLACEMENT_FINISHED){
+                                logger.debug("Our placement is finished");
+                                if(Globals.game.startingPlayer){
+                                    Globals.gameState = GameState.PLAYER_TURN;
+                                } else {
+                                    Globals.gameState = GameState.ENEMY_TURN;
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
+                    if(line.startsWith("ATTACK")){
+                        logger.debug("Position: X: "+line.split(" ")[1]+", Y: "+line.split(" ")[2]);
+                        Platform.runLater(() -> Globals.game.resolveEnemyTurn(line.split(" ")));
+                    }
+                    logger.debug("Sending confirmation of received message from remote client");
+                    out.println("RESPONSE");
+                } catch (NoSuchElementException e) {
+                    logger.trace("No element found");
                 }
-                if(line.startsWith("ATTACK")){
-                    System.out.println(line.split(" ")[1]+" "+line.split(" ")[2]);
-                    Platform.runLater(() -> Globals.game.resolveEnemyTurn(line.split(" ")));
-                }
-                logger.debug("Sending confirmation of received message from remote client");
-                out.println("RESPONSE");
             }
         } catch (ConnectException e) {
             try {
