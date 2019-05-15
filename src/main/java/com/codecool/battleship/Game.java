@@ -6,6 +6,7 @@ import com.codecool.battleship.tile.PlayerTile;
 import com.codecool.battleship.tile.ShipTile;
 import com.codecool.battleship.tile.UnknownTile;
 import com.codecool.battleship.tile.WaterTile;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -37,7 +38,7 @@ public class Game extends Pane {
     }
 
     void mainMenu() {
-        logger.debug("Initiating Main Menu");
+        logger.trace("Initiating Main Menu");
 
         final TextField ip = new TextField();
         ip.setPromptText("Enter ip.");
@@ -68,28 +69,28 @@ public class Game extends Pane {
             }
         });
 
-        logger.debug("Done Initiating Main Menu");
+        logger.trace("Done Initiating Main Menu");
     }
 
     private void createConnection(String ip, String port) {
-        logger.debug("Creating client side connection");
+        logger.trace("Creating client side connection");
 
         BattleshipClient client = BattleshipClient.getInstance();
         client.setServerAddress(ip);
         client.setServerPort(Integer.parseInt(port));
         client.start();
 
-        logger.debug("Done Creating client side connection");
+        logger.trace("Done Creating client side connection");
     }
 
     private void startServer() {
-        logger.debug("Initiating Server side connection");
+        logger.trace("Initiating Server side connection");
 
         BattleshipServer server = BattleshipServer.getInstance();
         server.setPort(Globals.LOCAL_PORT);
         server.start();
 
-        logger.debug("Server-side connection running");
+        logger.trace("Server-side connection running");
     }
 
     public void setStartingPlayer() {
@@ -101,7 +102,7 @@ public class Game extends Pane {
     }
 
     public void startGame() {
-        logger.debug("Initiating game startup");
+        logger.trace("Initiating game startup");
 
         clearScreen();
         addShipLayouts();
@@ -110,7 +111,7 @@ public class Game extends Pane {
         fillEnemyGrid();
         drawEnemyGrid();
 
-        logger.debug("Done Initiating game startup");
+        logger.trace("Done Initiating game startup");
     }
 
     public void addPlayerShip(Ship ship) {
@@ -119,7 +120,7 @@ public class Game extends Pane {
     }
 
     private void addShipLayouts() {
-        logger.debug("Preparing ship layouts");
+        logger.trace("Preparing ship layouts");
 
         shipLayouts.push(new ShipLayout(2));
         shipLayouts.push(new ShipLayout(2));
@@ -128,15 +129,15 @@ public class Game extends Pane {
         shipLayouts.push(new ShipLayout(4));
 
 
-        logger.debug("Done Preparing ship layouts");
+        logger.trace("Done Preparing ship layouts");
     }
 
     public void resolveEnemyTurn(String[] enemyAction) {
-        logger.debug("Resolving Enemy Turn");
+        logger.trace("Resolving Enemy Turn");
         if(enemyAction[0].equals("ATTACK")){
             playerGrid[Integer.parseInt(enemyAction[1])][Integer.parseInt(enemyAction[2])].hit();
         }
-        logger.debug("Done Resolving Enemy Turn");
+        logger.trace("Done Resolving Enemy Turn");
     }
 
     public ShipLayout getShipLayout() {
@@ -165,12 +166,14 @@ public class Game extends Pane {
                 logger.debug("Enemy player is not finished");
                 Globals.gameState = GameState.PLACEMENT_FINISHED;
             }
-            BattleshipServer.getInstance().sendCommand("PLACEMENT_FINISHED");
+            Platform.runLater(() -> {
+                BattleshipServer.getInstance().sendCommand("PLACEMENT_FINISHED");
+            });
         }
     }
 
     private void fillEnemyGrid() {
-        logger.debug("Filling Enemy Grid");
+        logger.trace("Filling Enemy Grid");
 
         for (int x = 0; x<10; x++) {
             for (int y = 0; y<10; y++) {
@@ -181,7 +184,7 @@ public class Game extends Pane {
             }
         }
 
-        logger.debug("Done Filling Enemy Grid");
+        logger.trace("Done Filling Enemy Grid");
     }
 
     private double enemyGridInitialPosition() {
@@ -190,7 +193,7 @@ public class Game extends Pane {
     }
 
     private void fillWater() {
-        logger.debug("Filling Player Grid with Water Tiles");
+        logger.trace("Filling Player Grid with Water Tiles");
 
         for (int x = 0; x<10; x++) {
             for (int y = 0; y<10; y++) {
@@ -201,7 +204,7 @@ public class Game extends Pane {
             }
         }
 
-        logger.debug("Done Filling Player Grid with Water Tiles");
+        logger.trace("Done Filling Player Grid with Water Tiles");
     }
 
     private void addShipPart(ShipTile shipTile) {
@@ -223,15 +226,15 @@ public class Game extends Pane {
     }
 
     private void clearScreen() {
-        logger.debug("Clearing screen");
+        logger.trace("Clearing screen");
 
         getChildren().clear();
 
-        logger.debug("Done Clearing screen");
+        logger.trace("Done Clearing screen");
     }
 
     private void drawPlayerGrid() {
-        logger.debug("Drawing Player Grid");
+        logger.trace("Drawing Player Grid");
 
         for (int i = 0; i<10; i++) {
             for (int j = 0; j<10; j++) {
@@ -239,11 +242,11 @@ public class Game extends Pane {
             }
         }
 
-        logger.debug("Done Drawing Player Grid");
+        logger.trace("Done Drawing Player Grid");
     }
 
     private void drawEnemyGrid() {
-        logger.debug("Drawing Enemy Grid");
+        logger.trace("Drawing Enemy Grid");
 
         for (int i = 0; i<10; i++) {
             for (int j = 0; j<10; j++) {
@@ -251,7 +254,7 @@ public class Game extends Pane {
             }
         }
 
-        logger.debug("Done Drawing Enemy Grid");
+        logger.trace("Done Drawing Enemy Grid");
     }
 
     public void shipPlacementMarker(int x, int y) {
