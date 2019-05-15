@@ -4,6 +4,8 @@ import com.codecool.battleship.connection.BattleshipClient;
 import com.codecool.battleship.connection.BattleshipServer;
 import com.codecool.battleship.tile.*;
 import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -13,12 +15,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Consumer;
 
 public class Game extends Pane {
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
@@ -56,17 +61,28 @@ public class Game extends Pane {
         submit.setLayoutY(420);
         getChildren().add(submit);
 
-        submit.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            System.out.println(ip.getCharacters());
-            String[] address = ip.getCharacters().toString().split(":");
-            if(address.length == 1){
-                createConnection(address[0], String.valueOf(Globals.DEFAULT_SERVER_PORT));
-            }else{
-                createConnection(address[0],address[1]);
-            }
-        });
+        EventHandler<MouseEvent> onStartMouseHandler = e -> {
+            setupt(ip);
+        };
+        EventHandler<KeyEvent> onStartKeyHandler = e -> {
+            if(String.valueOf(e.getCode()).equals("ENTER"))
+                setupt(ip);
+        };
+
+        submit.setOnMouseClicked(onStartMouseHandler);
+        ip.setOnKeyPressed(onStartKeyHandler);
 
         logger.trace("Done Initiating Main Menu");
+    }
+
+    private void setupt(TextField ip) {
+        System.out.println(ip.getCharacters());
+        String[] address = ip.getCharacters().toString().split(":");
+        if (address.length == 1) {
+            createConnection(address[0], String.valueOf(Globals.DEFAULT_SERVER_PORT));
+        } else {
+            createConnection(address[0], address[1]);
+        }
     }
 
     private void createConnection(String ip, String port) {
