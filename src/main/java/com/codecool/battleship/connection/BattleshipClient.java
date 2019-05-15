@@ -2,6 +2,7 @@ package com.codecool.battleship.connection;
 
 import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
+import com.codecool.battleship.tile.TileStatus;
 import javafx.application.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,9 +87,16 @@ public class BattleshipClient implements Runnable {
                             }
                         });
                     }
-                    if(line.startsWith("ATTACK")){
+                    if(line.startsWith("ATTACK_SEND")){
                         logger.debug("Position: X: "+line.split(" ")[1]+", Y: "+line.split(" ")[2]);
                         Platform.runLater(() -> Globals.game.resolveEnemyTurn(line.split(" ")));
+                    }
+                    if(line.startsWith("ATTACK_RESPONSE")){
+                        String[] args = line.split(" ");
+                        int x = Integer.parseInt(args[1]);
+                        int y = Integer.parseInt(args[2]);
+                        TileStatus status = TileStatus.valueOf(args[3]);
+                        Platform.runLater(() -> Globals.game.markEnemyTile(x,y,status));
                     }
                     logger.debug("Sending confirmation of received message from remote client");
                     out.println("RESPONSE");

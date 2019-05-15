@@ -4,6 +4,7 @@ import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
 import com.codecool.battleship.Ship;
 import com.codecool.battleship.ShipLayout;
+import com.codecool.battleship.connection.BattleshipServer;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -23,6 +24,10 @@ public abstract class PlayerTile extends Tile {
     }
 
     public abstract void hit();
+
+    public void sendAttackResponse() {
+        BattleshipServer.getInstance().sendCommand("ATTACK_RESPONSE "+getGridX()+" "+getGridY()+" "+getStatus());
+    }
 
     private EventHandler<MouseEvent> onMouseClickHandler = e -> {
         logger.trace("Mouse pressed on " + this);

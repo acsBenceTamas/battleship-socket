@@ -2,10 +2,7 @@ package com.codecool.battleship;
 
 import com.codecool.battleship.connection.BattleshipClient;
 import com.codecool.battleship.connection.BattleshipServer;
-import com.codecool.battleship.tile.PlayerTile;
-import com.codecool.battleship.tile.ShipTile;
-import com.codecool.battleship.tile.UnknownTile;
-import com.codecool.battleship.tile.WaterTile;
+import com.codecool.battleship.tile.*;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -134,10 +131,16 @@ public class Game extends Pane {
 
     public void resolveEnemyTurn(String[] enemyAction) {
         logger.trace("Resolving Enemy Turn");
-        if(enemyAction[0].equals("ATTACK")){
-            playerGrid[Integer.parseInt(enemyAction[1])][Integer.parseInt(enemyAction[2])].hit();
-        }
+        int x = Integer.parseInt(enemyAction[1]);
+        int y = Integer.parseInt(enemyAction[2]);
+        playerGrid[x][y].hit();
+        Globals.gameState = GameState.PLAYER_TURN;
+//        BattleshipServer.getInstance().sendCommand("ATTACK_RESPONSE "+x+" "+y+" "+playerGrid[x][y].getStatus());
         logger.trace("Done Resolving Enemy Turn");
+    }
+
+    public void markEnemyTile(int x, int y, TileStatus status){
+        enemyGrid[x][y].reveal(status);
     }
 
     public ShipLayout getShipLayout() {
@@ -301,7 +304,7 @@ public class Game extends Pane {
         logger.trace("Removing placement markers");
         for (int i = 0; i<10; i++) {
             for (int j = 0; j<10; j++) {
-                playerGrid[i][j].setFill(new ImagePattern(playerGrid[i][j].getStatus().image));
+                playerGrid[i][j].resetDisplay();
             }
         }
     }

@@ -34,7 +34,12 @@ public abstract class Tile extends Rectangle {
     }
 
     void setStatus(TileStatus status) {
+        logger.debug("Status change image: "+status.image.toString());
         this.status = status;
+        setFill(new ImagePattern(status.image));
+    }
+
+    public void resetDisplay() {
         setFill(new ImagePattern(status.image));
     }
 

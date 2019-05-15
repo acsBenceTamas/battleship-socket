@@ -27,6 +27,7 @@ public class UnknownTile extends Tile {
     public void reveal(TileStatus status) {
         logger.debug("Revealing " + this);
         this.status = status;
+        setFill(new ImagePattern(status.image));
     }
 
 
@@ -34,9 +35,9 @@ public class UnknownTile extends Tile {
         logger.trace("Mouse pressed on " + this);
         if(e.getButton() == MouseButton.PRIMARY && Globals.gameState == GameState.PLAYER_TURN && status == TileStatus.UNKNOWN) {
             Globals.gameState = GameState.ENEMY_TURN;
-            setFill(status.color);
+            resetDisplay();
             Platform.runLater(() -> {
-                BattleshipServer.getInstance().sendCommand("ATTACKED "+getGridX()+" "+getGridY());
+                BattleshipServer.getInstance().sendCommand("ATTACK_SEND "+getGridX()+" "+getGridY());
             });
         }
     };

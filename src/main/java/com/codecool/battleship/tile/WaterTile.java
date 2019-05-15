@@ -12,5 +12,6 @@ public class WaterTile extends PlayerTile {
     public void hit() {
         logger.debug(this + " has been hit");
         setStatus(TileStatus.MISS);
+        sendAttackResponse();
     }
 }
