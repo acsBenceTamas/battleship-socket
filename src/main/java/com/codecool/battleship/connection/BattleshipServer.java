@@ -2,6 +2,8 @@ package com.codecool.battleship.connection;
 
 import com.codecool.battleship.Globals;
 import javafx.application.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +14,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class BattleshipServer implements Runnable {
+    private static final Logger logger = LoggerFactory.getLogger(BattleshipServer.class);
     private static BattleshipServer server;
     private Thread thread;
     private int port = 0;
@@ -26,19 +29,23 @@ public class BattleshipServer implements Runnable {
     }
 
     private BattleshipServer() {
-        // singleton
+        logger.debug("Creating BattleshipServer singleton");
     }
 
     public void setPort(int port) {
+        logger.debug("Setting server port to " + port);
         this.port = port;
     }
 
     public void sendCommand(String command) {
+        logger.debug("Adding command to command stack: " + command);
         commands.addLast(command);
     }
 
     public void run() {
+        logger.debug("Server is running");
         try (ServerSocket listener = new ServerSocket(port)) {
+            logger.debug("Server socket initiated");
             socket = listener.accept();
             Scanner in = new Scanner(socket.getInputStream());
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -47,21 +54,23 @@ public class BattleshipServer implements Runnable {
                 if (in.hasNextLine()) {
                     String response = in.nextLine();
                     if (response.startsWith("CONNECTION") && !Globals.CLIENT_CONNECTED) {
-                        System.out.println(response);
+                        logger.debug("Received connection information from remote client: " + response);
                         String[] responseSeparated = response.split(" ");
                         BattleshipClient client = BattleshipClient.getInstance();
                         client.setServerAddress(responseSeparated[1]);
                         client.setServerPort(Integer.parseInt(responseSeparated[2]));
                         client.start();
                         Platform.runLater(() -> Globals.game.startGame());
+                        logger.debug("Responding to remote client with CONNECTION_SUCCESS");
                         sendCommand("CONNECTION_SUCCESS");
                     }
                 }
                 if (commands.size() > 0) {
-                    out.println(commands.pollFirst());
+                    String command = commands.pollFirst();
+                    logger.debug("Sending command to remote client: " + command);
+                    out.println(command);
                     String response = in.nextLine();
-                    System.out.println(response);
-                    System.out.println("Client responded to command");
+                    logger.debug("Received response from remote client: " + response);
                 }
             }
         } catch (Exception e) {
@@ -75,6 +84,7 @@ public class BattleshipServer implements Runnable {
     }
 
     public void start() {
+        logger.debug("Initiating server thread");
         if (thread == null) {
             thread = new Thread (this, "Server");
             thread.start ();
