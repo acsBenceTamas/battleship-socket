@@ -4,26 +4,22 @@ import com.codecool.battleship.connection.BattleshipClient;
 import com.codecool.battleship.connection.BattleshipServer;
 import com.codecool.battleship.tile.*;
 import javafx.application.Platform;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.function.Consumer;
 
 public class Game extends Pane {
     private static final Logger logger = LoggerFactory.getLogger(Game.class);
@@ -62,11 +58,11 @@ public class Game extends Pane {
         getChildren().add(submit);
 
         EventHandler<MouseEvent> onStartMouseHandler = e -> {
-            setupt(ip);
+            setupConnection(ip);
         };
         EventHandler<KeyEvent> onStartKeyHandler = e -> {
-            if(String.valueOf(e.getCode()).equals("ENTER"))
-                setupt(ip);
+            if(e.getCode() == KeyCode.ENTER)
+                setupConnection(ip);
         };
 
         submit.setOnMouseClicked(onStartMouseHandler);
@@ -75,7 +71,7 @@ public class Game extends Pane {
         logger.trace("Done Initiating Main Menu");
     }
 
-    private void setupt(TextField ip) {
+    private void setupConnection(TextField ip) {
         System.out.println(ip.getCharacters());
         String[] address = ip.getCharacters().toString().split(":");
         if (address.length == 1) {
