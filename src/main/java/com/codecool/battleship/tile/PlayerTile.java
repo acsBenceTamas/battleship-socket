@@ -40,7 +40,7 @@ public abstract class PlayerTile extends Tile {
                     Globals.game.shipPlacementMarker(getGridX(), getGridY());
                 } else if(e.getButton() == MouseButton.PRIMARY && Globals.game.isValidPlacement(getGridX(), getGridY(), shipLayout.getLength())) {
                     Globals.game.removeShipLayout();
-                    new Ship(getGridX(), getGridY(), shipLayout.getLength(), Globals.getPlacementDirection());
+                    Globals.game.addPlayerShip(new Ship(getGridX(), getGridY(), shipLayout.getLength(), Globals.getPlacementDirection()));
                 }
             }
         }

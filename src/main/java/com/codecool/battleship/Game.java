@@ -95,7 +95,9 @@ public class Game extends Pane {
     }
 
     private boolean isGameOver() {
+        logger.debug("Checking game over condition");
         for (Ship playerShip:playerShips) {
+            logger.debug("Is ship sunk: "+playerShip.isShipSunk());
             if(!playerShip.isShipSunk()){
                 return false;
             }

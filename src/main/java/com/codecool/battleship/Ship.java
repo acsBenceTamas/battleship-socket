@@ -1,11 +1,14 @@
 package com.codecool.battleship;
 
 import com.codecool.battleship.tile.ShipTile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Ship {
+    private static final Logger logger = LoggerFactory.getLogger(Ship.class);
     List<ShipTile> shipTiles = new ArrayList<ShipTile>();
     private Direction direction;
     private int length;
@@ -27,6 +30,7 @@ public class Ship {
 
     public boolean isShipSunk() {
         intactParts--;
+        logger.debug("Intact parts left: "+intactParts);
         return countIntactParts() == 0;
     }
 
