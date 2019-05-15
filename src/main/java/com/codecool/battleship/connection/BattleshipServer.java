@@ -3,6 +3,7 @@ package com.codecool.battleship.connection;
 import com.codecool.battleship.Globals;
 import javafx.application.Platform;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -42,7 +43,7 @@ public class BattleshipServer implements Runnable {
             Scanner in = new Scanner(socket.getInputStream());
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
-            while (true) {
+            while (Globals.GAME_IS_RUNNING) {
                 if (in.hasNextLine()) {
                     String response = in.nextLine();
                     if (response.startsWith("CONNECTION") && !Globals.CLIENT_CONNECTED) {
@@ -64,6 +65,11 @@ public class BattleshipServer implements Runnable {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            socket.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

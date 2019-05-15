@@ -15,6 +15,7 @@ public class Globals {
     public static int REMOTE_PORT = DEFAULT_SERVER_PORT;
     public static String REMOTE_ADDRESS = "localhost";
     public static boolean CLIENT_CONNECTED = false;
+    public static boolean GAME_IS_RUNNING = true;
 
     public static void changeDirection() {
         placementDirection = (placementDirection+1) % Direction.values().length;

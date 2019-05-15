@@ -10,7 +10,6 @@ public class Main extends Application {
 
     public static void main(String[] args){
         setupGlobals(args);
-        startServer(args);
 
         if (args.length > 3) if (args[3].equals("true")) clientTest();
 
@@ -32,23 +31,20 @@ public class Main extends Application {
         server.sendCommand("Do my bidding");
     }
 
+    @Override
+    public void stop() {
+        Globals.GAME_IS_RUNNING = false;
+        System.exit(0);
+    }
+
     public void start(Stage primaryStage) {
         Game game = new Game();
         Globals.game = game;
         Scene scene = new Scene(game, Globals.WINDOW_WIDTH,Globals.WINDOW_HEIGHT);
         game.mainMenu();
+        primaryStage.setTitle("Battleship game using port: "+Globals.LOCAL_PORT);
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-    }
-
-    private static void startServer(String[] args) {
-        BattleshipServer server = BattleshipServer.getInstance();
-        int port = Globals.LOCAL_PORT;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
-        }
-        server.setPort(port);
-        server.start();
     }
 }

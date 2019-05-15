@@ -1,6 +1,7 @@
 package com.codecool.battleship;
 
 import com.codecool.battleship.connection.BattleshipClient;
+import com.codecool.battleship.connection.BattleshipServer;
 import com.codecool.battleship.tile.*;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
@@ -24,6 +25,7 @@ public class Game extends Pane {
     private List<Ship> playerShips = new ArrayList<>();
 
     Game() {
+        startServer();
     }
 
     void mainMenu() {
@@ -58,6 +60,12 @@ public class Game extends Pane {
         client.setServerAddress(ip);
         client.setServerPort(Integer.parseInt(port));
         client.start();
+    }
+
+    private void startServer() {
+        BattleshipServer server = BattleshipServer.getInstance();
+        server.setPort(Globals.LOCAL_PORT);
+        server.start();
     }
 
     public void startGame() {
