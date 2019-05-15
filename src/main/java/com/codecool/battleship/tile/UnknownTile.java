@@ -4,9 +4,11 @@ import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
 import com.codecool.battleship.connection.BattleshipServer;
 import javafx.event.EventHandler;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +40,13 @@ public class UnknownTile extends Tile {
 
     private EventHandler<MouseEvent> onMouseEnterHandler = e -> {
         if(Globals.gameState == GameState.PLAYER_TURN && status == TileStatus.UNKNOWN){
-            setFill(Color.WHITE);
+            setFill(new ImagePattern(new Image("images/crosshair.png")));
         }
     };
 
     private EventHandler<MouseEvent> onMouseLeaveHandler = e -> {
         if(Globals.gameState == GameState.PLAYER_TURN && status == TileStatus.UNKNOWN){
-            setFill(status.color);
+            setFill(new ImagePattern(status.image));
         }
     };
 }

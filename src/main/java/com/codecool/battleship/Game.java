@@ -13,6 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.text.Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -297,7 +298,7 @@ public class Game extends Pane {
         logger.trace("Removing placement markers");
         for (int i = 0; i<10; i++) {
             for (int j = 0; j<10; j++) {
-                playerGrid[i][j].setFill(playerGrid[i][j].getStatus().color);
+                playerGrid[i][j].setFill(new ImagePattern(playerGrid[i][j].getStatus().image));
             }
         }
     }

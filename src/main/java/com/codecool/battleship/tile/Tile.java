@@ -1,7 +1,9 @@
 package com.codecool.battleship.tile;
 
 import com.codecool.battleship.Globals;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,18 +14,18 @@ public abstract class Tile extends Rectangle {
     private final int y;
     private TileStatus status;
 
-    private Tile(int x, int y, Color color) {
+    private Tile(int x, int y, Image image) {
         this.x = x;
         this.y = y;
         setWidth(Globals.TILE_WIDTH);
         setHeight(Globals.TILE_HEIGHT);
-        setFill(color);
+        setFill(new ImagePattern(image));
         setStroke(Color.BLACK);
-        logger.trace("Tile created at: " + x + "-" + y + " with color " + color);
+        logger.trace("Tile created at: " + x + "-" + y + " with color " + image);
     }
 
     Tile(int x, int y, TileStatus status) {
-        this(x, y, status.color);
+        this(x, y, status.image);
         this.status = status;
     }
 
@@ -33,7 +35,7 @@ public abstract class Tile extends Rectangle {
 
     void setStatus(TileStatus status) {
         this.status = status;
-        setFill(status.color);
+        setFill(new ImagePattern(status.image));
     }
 
     public int getGridX() {
