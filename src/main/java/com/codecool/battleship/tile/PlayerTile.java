@@ -7,19 +7,25 @@ import com.codecool.battleship.ShipLayout;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public abstract class PlayerTile extends Tile {
+    private static final Logger logger = LoggerFactory.getLogger(PlayerTile.class);
 
     PlayerTile(int x, int y, TileStatus status) {
         super(x, y, status);
         this.setOnMouseEntered(onMouseEnterHandler);
         this.setOnMouseExited(onMouseLeaveHandler);
         this.setOnMousePressed(onMouseClickHandler);
+        logger.trace("Player Tile created at: " + x + "-" + y + " with status " + status);
     }
 
     public abstract void hit();
 
     private EventHandler<MouseEvent> onMouseClickHandler = e -> {
+        logger.trace("Mouse pressed on " + this);
         if(Globals.gameState == GameState.PLACEMENT){
             ShipLayout shipLayout = Globals.game.getShipLayout();
             if(shipLayout != null){
@@ -46,4 +52,9 @@ public abstract class PlayerTile extends Tile {
             Globals.game.shipPlacementMarkerRemove();
         }
     };
+
+    @Override
+    public String toString() {
+        return "PlayerTile: " + getGridX() + "-" + getGridY() + " | " + getStatus();
+    }
 }

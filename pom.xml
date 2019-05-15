@@ -14,13 +14,20 @@
         <!--<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
     </properties>
 
-    <!--<dependencies>-->
-        <!--<dependency>-->
-            <!--<groupId>org.openjfx</groupId>-->
-            <!--<artifactId>javafx-controls</artifactId>-->
-            <!--<version>12.0.1</version>-->
-        <!--</dependency>-->
-    <!--</dependencies>-->
+    <dependencies>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.26</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk14 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.26</version>
+        </dependency>
+    </dependencies>
     <!--<build>-->
         <!--<plugins>-->
             <!--<plugin>-->
