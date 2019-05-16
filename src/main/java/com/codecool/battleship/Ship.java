@@ -10,14 +10,12 @@ import java.util.List;
 public class Ship {
     private static final Logger logger = LoggerFactory.getLogger(Ship.class);
     List<ShipTile> shipTiles = new ArrayList<ShipTile>();
-    private Direction direction;
     private int length;
     private int intactParts;
     
     public Ship(int x, int y, int length, Direction direction) {
         this.length = length;
         this.intactParts = length;
-        this.direction = direction;
         for(int i = 0; i < length; i++){
             shipTiles.add(new ShipTile(x+direction.x*i,y+direction.y*i,this));
         }
@@ -47,5 +45,10 @@ public class Ship {
         for (ShipTile shipParts:shipTiles) {
             shipParts.sunk();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Ship: length = " + length + "; intact parts: " + intactParts + "; with parts: " + shipTiles;
     }
 }

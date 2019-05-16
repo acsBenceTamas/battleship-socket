@@ -142,11 +142,11 @@ public class Game extends Pane {
     }
 
     public void displayGameOver(boolean won) {
-        Text text = new Text(Globals.WINDOW_WIDTH/2-100,Globals.WINDOW_HEIGHT/2-36,"Placeholder");
+        Text text = new Text(Globals.WINDOW_WIDTH/2-100,Globals.WINDOW_HEIGHT/2-36,"");
         if(won){
-            text.setText("Won");
+            text.setText("You Won!");
         } else {
-            text.setText("Lost");
+            text.setText("You Lost!");
         }
         text.setWrappingWidth(200);
         text.setTextAlignment(TextAlignment.CENTER);
@@ -165,7 +165,6 @@ public class Game extends Pane {
             return;
         }
         Globals.gameState = GameState.PLAYER_TURN;
-//        BattleshipServer.getInstance().sendCommand("ATTACK_RESPONSE "+x+" "+y+" "+playerGrid[x][y].getStatus());
         logger.trace("Done Resolving Enemy Turn");
     }
 

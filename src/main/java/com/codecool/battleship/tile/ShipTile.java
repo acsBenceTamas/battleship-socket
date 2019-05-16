@@ -29,4 +29,9 @@ public class ShipTile extends PlayerTile {
     public void sunk() {
         setStatus(TileStatus.SUNK);
     }
+
+    @Override
+    public String toString() {
+        return "ShipTile x=" + getGridX() + " y=" + getGridY() + " status=" + getStatus();
+    }
 }
