@@ -11,6 +11,7 @@ public class WaterTile extends PlayerTile {
 
     public void hit() {
         logger.debug(this + " has been hit");
+//        SoundEffect.MISS.mediaPlayer.play();
         setStatus(TileStatus.MISS);
         sendAttackResponse();
     }

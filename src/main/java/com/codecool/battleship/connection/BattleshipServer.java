@@ -1,6 +1,5 @@
 package com.codecool.battleship.connection;
 
-import com.codecool.battleship.GameState;
 import com.codecool.battleship.Globals;
 import javafx.application.Platform;
 import org.slf4j.Logger;

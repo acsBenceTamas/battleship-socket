@@ -1,7 +1,5 @@
 package com.codecool.battleship;
 
-import javafx.scene.Scene;
-
 public class Globals {
     public static Game game;
     public static int placementDirection = 0;

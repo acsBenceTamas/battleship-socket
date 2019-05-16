@@ -15,7 +15,9 @@ public class ShipTile extends PlayerTile {
 
     public void hit() {
         logger.debug(this + " has been hit");
+//        SoundEffect.HIT.mediaPlayer.play();
         setStatus(TileStatus.HIT);
+        ship.destroyPart();
         if(ship.isShipSunk()) {
             ship.sinkShip();
             ship.sendSunkenShipData();

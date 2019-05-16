@@ -29,9 +29,12 @@ public class Ship {
     }
 
     public boolean isShipSunk() {
-        intactParts--;
         logger.debug("Intact parts left: "+intactParts);
         return countIntactParts() == 0;
+    }
+
+    public void destroyPart() {
+        intactParts--;
     }
 
     public void sendSunkenShipData() {

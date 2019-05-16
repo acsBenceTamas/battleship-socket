@@ -38,7 +38,7 @@ public class Game extends Pane {
     }
 
     void mainMenu() {
-        logger.trace("Initiating Main Menu");
+        logger.trace("Initializing Main Menu");
 
         final TextField ip = new TextField();
         ip.setPromptText("Enter ip.");
@@ -141,19 +141,6 @@ public class Game extends Pane {
         playerShips.add(ship);
     }
 
-    private void addShipLayouts() {
-        logger.trace("Preparing ship layouts");
-
-        shipLayouts.push(new ShipLayout(2));
-        shipLayouts.push(new ShipLayout(2));
-        shipLayouts.push(new ShipLayout(3));
-        shipLayouts.push(new ShipLayout(3));
-        shipLayouts.push(new ShipLayout(4));
-
-
-        logger.trace("Done Preparing ship layouts");
-    }
-
     public void displayGameOver(boolean won) {
         Text text = new Text(Globals.WINDOW_WIDTH/2-100,Globals.WINDOW_HEIGHT/2-36,"Placeholder");
         if(won){
@@ -173,8 +160,8 @@ public class Game extends Pane {
         int y = Integer.parseInt(enemyAction[2]);
         playerGrid[x][y].hit();
         if(isGameOver()){
-            handleGameOver(false);
             BattleshipServer.getInstance().sendCommand("GAME_WON");
+            handleGameOver(false);
             return;
         }
         Globals.gameState = GameState.PLAYER_TURN;
@@ -193,6 +180,18 @@ public class Game extends Pane {
             return shipLayouts.peek();
         }
         return null;
+    }
+
+    private void addShipLayouts() {
+        logger.trace("Preparing ship layouts");
+
+        shipLayouts.push(new ShipLayout(2));
+        shipLayouts.push(new ShipLayout(2));
+        shipLayouts.push(new ShipLayout(3));
+        shipLayouts.push(new ShipLayout(3));
+        shipLayouts.push(new ShipLayout(4));
+
+        logger.trace("Done Preparing ship layouts");
     }
 
     public void removeShipLayout() {
@@ -255,6 +254,7 @@ public class Game extends Pane {
 
     private void addShipPart(ShipTile shipTile) {
         logger.trace("Adding ship part " + shipTile + " to the grid");
+
         int x = shipTile.getGridX();
         int y = shipTile.getGridY();
         getChildren().remove(playerGrid[x][y]);
@@ -266,6 +266,7 @@ public class Game extends Pane {
 
     void addShipToGrid(Ship ship) {
         logger.debug("Adding ship to grid: " + ship);
+
         for (ShipTile shipTile:ship.shipTiles) {
             addShipPart(shipTile);
         }
@@ -301,25 +302,8 @@ public class Game extends Pane {
         }
 
         logger.trace("Done Drawing Enemy Grid");
-    }
 
-    public void shipPlacementMarker(int x, int y) {
-        logger.trace("Placing ship placement marker at " + x + "-" + y);
-        int length = shipLayouts.peek().getLength();
-        Direction direction = Globals.getPlacementDirection();
-        Color color = Color.RED;
-        if(isValidPlacement(x, y, length)) {
-            color = Color.GREEN;
-        }
-        for(int i = 0; i < length; i++){
-            int xPos = x+i*direction.x;
-            int yPos = y+i*direction.y;
-            if(xPos >= 0 && xPos < GRID_SIZE && yPos >= 0 && yPos < GRID_SIZE) {
-                playerGrid[xPos][yPos].setFill(color);
-            }
-        }
     }
-
     public boolean isValidPlacement(int x, int y, int length) {
         Direction direction = Globals.getPlacementDirection();
         logger.trace("Checking placement validity at " + x + "-" + y + " with length " + length + " in direction " + direction);
@@ -343,6 +327,23 @@ public class Game extends Pane {
         return true;
     }
 
+    public void shipPlacementMarker(int x, int y) {
+        logger.trace("Placing ship placement marker at " + x + "-" + y);
+        int length = shipLayouts.peek().getLength();
+        Direction direction = Globals.getPlacementDirection();
+        Color color = Color.RED;
+        if(isValidPlacement(x, y, length)) {
+            color = Color.GREEN;
+        }
+        for(int i = 0; i < length; i++){
+            int xPos = x+i*direction.x;
+            int yPos = y+i*direction.y;
+            if(xPos >= 0 && xPos < GRID_SIZE && yPos >= 0 && yPos < GRID_SIZE) {
+                playerGrid[xPos][yPos].setFill(color);
+            }
+        }
+    }
+
     public void shipPlacementMarkerRemove() {
         logger.trace("Removing placement markers");
         for (int i = 0; i<10; i++) {
@@ -352,26 +353,9 @@ public class Game extends Pane {
         }
     }
 
-    void ingameEventHandlers() {
-        this.getScene().addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getText().equals("a")){
-                for (int i = 0; i<10; i++) {
-                    for (int j = 0; j<10; j++) {
-                        playerGrid[i][j].hit();
-                    }
-                }
-                logger.debug("a keybress");
-            }
-            if (event.getText().equals("b")){
-                playerGrid[0][0].hit();
-                playerGrid[0][1].hit();
-                logger.debug("b keybress");
-            }
-        });
-    }
-
     public void handleGameOver(boolean won) {
         Globals.gameState = GameState.ENDED;
+//        Globals.GAME_IS_RUNNING = false;
         displayGameOver(won);
     }
 }

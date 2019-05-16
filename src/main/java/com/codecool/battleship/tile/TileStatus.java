@@ -1,11 +1,7 @@
 package com.codecool.battleship.tile;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 public enum TileStatus {
     INTACT(Color.GREY,"images/ship_intact.png"),
